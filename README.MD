@@ -1,0 +1,1 @@
+# My Nextjs template
