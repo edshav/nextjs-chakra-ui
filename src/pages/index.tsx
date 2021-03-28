@@ -1,15 +1,17 @@
-import { NextPage } from 'next';
-import Head from 'next/head';
-import { QueryClient, useQuery } from 'react-query';
-import { dehydrate } from 'react-query/hydration';
-import { Button, Menu, MenuButton, MenuItem, MenuList, Textarea } from '@chakra-ui/react';
-import { ChevronDownIcon } from '@chakra-ui/icons';
-import { getPosts } from 'api/endpoints/getPosts';
+import { NextPage } from "next";
+import Head from "next/head";
+import { QueryClient } from "react-query";
+import { dehydrate, DehydratedState } from "react-query/hydration";
+import { Heading } from "@chakra-ui/react";
+import { getPosts } from "features/posts/api/getPosts";
+import { PostListView } from "features/posts/components/PostListView";
+import { usePosts } from "features/posts/hooks/query/usePosts";
+import { Progress } from "components/Progress";
 
-export const getStaticProps = async () => {
+export const getStaticProps = async (): Promise<{ props: { dehydratedState: DehydratedState } }> => {
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery('posts', getPosts);
+  await queryClient.prefetchQuery("posts", getPosts);
 
   return {
     props: {
@@ -19,30 +21,20 @@ export const getStaticProps = async () => {
 };
 
 const HomePage: NextPage = () => {
-  const { data } = useQuery('posts', getPosts);
-  console.log(data?.[0]);
+  const { data, error, isLoading } = usePosts();
   return (
     <>
       <Head>
-        <title>My App</title>
+        <title>HomePage</title>
       </Head>
 
       <div>
-        HomePage
-        <Textarea rows={1} />
-        <Menu closeOnBlur>
-          {({ isOpen }) => (
-            <>
-              <MenuButton isActive={isOpen} as={Button} rightIcon={<ChevronDownIcon />}>
-                {isOpen ? 'Close' : 'Open'}
-              </MenuButton>
-              <MenuList>
-                <MenuItem>Download</MenuItem>
-                <MenuItem onClick={() => alert('Kagebunshin')}>Create a Copy</MenuItem>
-              </MenuList>
-            </>
-          )}
-        </Menu>
+        <Heading as="h1" size="lg" pb="6" textAlign="center">
+          Posts
+        </Heading>
+        {error ? <Heading>{error.message}</Heading> : null}
+        {isLoading ? <Progress /> : null}
+        {data ? <PostListView postList={data} /> : null}
       </div>
     </>
   );

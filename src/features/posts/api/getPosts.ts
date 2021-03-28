@@ -1,4 +1,4 @@
-import { jsonPlaceholderApi } from 'api/jsonPlaceholderApi';
+import { jsonPlaceholderApi } from "jsonPlaceholderApi";
 
 export type PostListItem = {
   userId: number;
@@ -8,6 +8,6 @@ export type PostListItem = {
 };
 
 export const getPosts = async (): Promise<PostListItem[]> => {
-  const { data } = await jsonPlaceholderApi.get<PostListItem[]>('/posts');
+  const { data } = await jsonPlaceholderApi.get<PostListItem[]>("/posts");
   return data;
 };

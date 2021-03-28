@@ -1,10 +1,11 @@
-import { ChakraProvider } from '@chakra-ui/react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { Hydrate } from 'react-query/hydration';
-import { NextPage } from 'next';
-import { AppProps } from 'next/app';
-import { theme } from '../theme';
-import { useRef } from 'react';
+import { ChakraProvider } from "@chakra-ui/react";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { Hydrate } from "react-query/hydration";
+import { ReactQueryDevtools } from "react-query/devtools";
+import { NextPage } from "next";
+import { AppProps } from "next/app";
+import { useRef } from "react";
+import { theme } from "../theme";
 
 const MyApp: NextPage<AppProps> = ({ Component, pageProps }) => {
   const queryClientRef = useRef<QueryClient>();
@@ -19,6 +20,7 @@ const MyApp: NextPage<AppProps> = ({ Component, pageProps }) => {
         <ChakraProvider theme={theme}>
           <Component {...pageProps} />
         </ChakraProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
       </Hydrate>
     </QueryClientProvider>
   );
