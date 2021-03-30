@@ -1,7 +1,8 @@
 import { AxiosError } from "axios";
+import { getPosts } from "features/posts/api/getPosts";
+import { Post } from "features/posts/interfaces";
 import { useQuery, UseQueryResult } from "react-query";
-import { PostListItem, getPosts } from "../../api/getPosts";
 
-export const usePosts = (): UseQueryResult<PostListItem[], AxiosError<unknown>> => {
-  return useQuery<PostListItem[], AxiosError>("posts", getPosts);
+export const usePosts = (): UseQueryResult<Post[], AxiosError<unknown>> => {
+  return useQuery<Post[], AxiosError>("posts", getPosts, { staleTime: Infinity });
 };

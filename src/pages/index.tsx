@@ -25,7 +25,7 @@ const HomePage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>HomePage</title>
+        <title>Posts</title>
       </Head>
 
       <div>
