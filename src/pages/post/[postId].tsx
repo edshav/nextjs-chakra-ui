@@ -1,8 +1,9 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
-import Head from "next/head";
+import { useRouter } from "next/router";
 import { QueryClient } from "react-query";
 import { dehydrate, DehydratedState } from "react-query/hydration";
-import { Progress } from "components/Progress";
+import { WithErrorAndLoading } from "components/WithErrorAndLoading";
+import { Layout } from "components/Layout";
 import { getPost } from "features/posts/api/getPost";
 import { getPosts } from "features/posts/api/getPosts";
 import { usePost } from "features/posts/hooks/query/usePost";
@@ -14,44 +15,50 @@ type Params = {
 
 export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const posts = await getPosts();
-
-  const paths = posts.map(post => {
+  const paths = posts.slice(0, 2).map(post => {
     return {
-      params: { postId: post.id.toString() },
+      params: { postId: String(post.id) },
     };
   });
   return { paths, fallback: true };
 };
 
 type Props = {
-  postId?: string;
   dehydratedState: DehydratedState;
 };
 
 export const getStaticProps: GetStaticProps<Props, Params> = async ({ params }) => {
   const postId = params?.postId;
   const queryClient = new QueryClient();
+  const numberId = Number(postId);
 
-  await queryClient.prefetchQuery(["post", postId], () => getPost(Number(postId)));
+  if (!isNaN(numberId)) {
+    await queryClient.prefetchQuery(["post", postId], () => getPost(numberId));
+  }
 
   return {
     props: {
-      postId,
       dehydratedState: dehydrate(queryClient),
     },
   };
 };
 
-const PostPage: NextPage<Props> = ({ postId }) => {
-  const { data, error, isLoading } = usePost(Number(postId));
+const PostPage: NextPage<Props> = () => {
+  const {
+    query: { postId },
+  } = useRouter();
+
+  console.log({ postId });
+
+  const { data, error, isLoading } = usePost(postId);
+
+  const postView = data ? <PostView post={data} /> : null;
+  const title = data ? `My App | ${data.title}` : "My App";
 
   return (
-    <>
-      <Head>
-        <title>Post | </title>
-      </Head>
-      {data ? <PostView post={data} /> : null}
-    </>
+    <WithErrorAndLoading error={error} isLoading={isLoading}>
+      <Layout title={title}>{postView}</Layout>
+    </WithErrorAndLoading>
   );
 };
 

@@ -8,29 +8,34 @@ type Props = {
 
 export const PostListView: React.FC<Props> = ({ postList }) => {
   return (
-    <Wrap p="12" justify="center">
-      {postList.map(({ userId, id, title, body }) => (
-        <WrapItem key={id} cursor="pointer">
-          <Link href={`/post/${encodeURIComponent(id)}`} prefetch={false} passHref>
-            <Flex
-              h="100%"
-              p="6"
-              maxW="sm"
-              borderWidth="1px"
-              borderRadius="lg"
-              overflow="hidden"
-              direction="column"
-              justify="space-between"
-              as="a"
-            >
-              <Heading as="h2" size="md" pb="6">
-                {title}
-              </Heading>
-              <Text isTruncated>{body}</Text>
-            </Flex>
-          </Link>
-        </WrapItem>
-      ))}
-    </Wrap>
+    <>
+      <Heading as="h1" size="lg" pb="6" textAlign="center">
+        Posts
+      </Heading>
+      <Wrap justify="center">
+        {postList.map(({ id, title, body }) => (
+          <WrapItem key={id} cursor="pointer">
+            <Link href={`/post/${encodeURIComponent(id)}`} prefetch={false} passHref>
+              <Flex
+                h="100%"
+                p="6"
+                maxW="sm"
+                borderWidth="1px"
+                borderRadius="lg"
+                overflow="hidden"
+                direction="column"
+                justify="space-between"
+                as="a"
+              >
+                <Heading as="h2" size="md" pb="6">
+                  {title}
+                </Heading>
+                <Text isTruncated>{body}</Text>
+              </Flex>
+            </Link>
+          </WrapItem>
+        ))}
+      </Wrap>
+    </>
   );
 };
